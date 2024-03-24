@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Search</title>
+    <style>
+        /* Define your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .color-option {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enhanced by Aydin</h1>
+    <form id="search-form">
+        <input type="text" id="search-input" placeholder="Search..." required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="search-results"></div>
+
+    <h2>Color Theme Picker</h2>
+    <div id="color-picker">
+        <div class="color-option" style="background-color: red" data-color="red"></div>
+        <div class="color-option" style="background-color: orange" data-color="orange"></div>
+        <div class="color-option" style="background-color: yellow" data-color="yellow"></div>
+        <div class="color-option" style="background-color: green" data-color="green"></div>
+        <div class="color-option" style="background-color: blue" data-color="blue"></div>
+        <div class="color-option" style="background-color: indigo" data-color="indigo"></div>
+        <div class="color-option" style="background-color: violet" data-color="violet"></div>
+        <!-- Add more color options as needed -->
+    </div>
+
+    <!-- Include your JavaScript code here -->
+    <script>
+        // Get all color options
+        const colorOptions = document.querySelectorAll('.color-option');
+
+        // Add click event listener to each color option
+        colorOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                // Get the color value from the data-color attribute
+                const color = option.dataset.color;
+                // Apply the selected color theme
+                applyColorTheme(color);
+            });
+        });
+
+        // Function to apply the selected color theme
+        function applyColorTheme(color) {
+            // Example: Update background color of body
+            document.body.style.backgroundColor = color;
+        }
+
+        function search(query) {
+            // Make a request to Google Custom Search JSON API
+            // Replace 'YOUR_API_KEY' and 'YOUR_CX' with your actual API key and CX code
+            fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyDP8bsapLj7NK1OVidM7M6gbPC9bPLrZcA&cx=63984f7d768394240&q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Process and display search results
+                    displayResults(data.items);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function displayResults(results) {
+            const searchResults = document.getElementById('search-results');
+            searchResults.innerHTML = '';
+
+            if (results && results.length > 0) {
+                results.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.innerHTML = `<h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                                           <p>${item.snippet}</p>`;
+                    searchResults.appendChild(resultItem);
+                });
+            } else {
+                searchResults.innerHTML = '<p>No results found.</p>';
+            }
+        }
+
+        const searchForm = document.getElementById('search-form');
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            if (query !== '') {
+                search(query);
+            }
+        });
+    </script>
+</body>
+</html>
