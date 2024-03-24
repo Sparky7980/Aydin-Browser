@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Search</title>
+    <!-- Include your CSS styles here -->
+</head>
+<body>
+    <h1>Enhanced by Aydin</h1>
+    <form id="search-form">
+        <input type="text" id="search-input" placeholder="Search..." required>
+        <button type="submit">Search</button>
+    </form>
+    <div id="search-results"></div>
+
+    <!-- Include your JavaScript code here -->
+    <script>
+        function search(query) {
+            // Make a request to Google Custom Search JSON API
+            // Replace 'YOUR_API_KEY' and 'YOUR_CX' with your actual API key and CX code
+            fetch(`https://www.googleapis.com/customsearch/v1?key=AIzaSyDP8bsapLj7NK1OVidM7M6gbPC9bPLrZcA&cx=63984f7d768394240&q=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    // Process and display search results
+                    displayResults(data.items);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function displayResults(results) {
+            const searchResults = document.getElementById('search-results');
+            searchResults.innerHTML = '';
+
+            if (results && results.length > 0) {
+                results.forEach(item => {
+                    const resultItem = document.createElement('div');
+                    resultItem.innerHTML = `<h3><a href="${item.link}" target="_blank">${item.title}</a></h3>
+                                           <p>${item.snippet}</p>`;
+                    searchResults.appendChild(resultItem);
+                });
+            } else {
+                searchResults.innerHTML = '<p>No results found.</p>';
+            }
+        }
+
+        const searchForm = document.getElementById('search-form');
+        searchForm.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const query = document.getElementById('search-input').value.trim();
+            if (query !== '') {
+                search(query);
+            }
+        });
+    </script>
+</body>
+</html>
